@@ -1,3 +1,5 @@
+.DS_Store
+
 # Built application files
 *.apk
 *.ap_
@@ -38,3 +40,5 @@ captures/
 
 # Keystore files
 *.jks
+
+explicitimage.properties
