@@ -16,6 +16,8 @@ import com.google.firebase.storage.StorageMetadata;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 
+import dk.lndesign.explicitimage.BuildConfig;
+
 /**
  * @author Lars Nielsen <larn@tv2.dk>.
  */
@@ -27,7 +29,7 @@ public class StorageController {
 
     public StorageController() {
         mStorageRef = FirebaseStorage.getInstance()
-                .getReferenceFromUrl("gs://explicit-image.appspot.com");
+                .getReferenceFromUrl(BuildConfig.STORAGE_URL);
 //                .child("upload");
 //                .child(getFormattedDate("yyyy-MM-dd", new Date()));
     }
