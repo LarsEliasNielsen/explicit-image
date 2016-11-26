@@ -1,0 +1,5 @@
+<resources>
+    <string name="app_name">ExplicitImage</string>
+
+    <string name="auth_failed">User authentication failed</string>
+</resources>

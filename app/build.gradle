@@ -1,0 +1,60 @@
+apply plugin: 'com.android.application'
+
+// Import properties from file.
+def keystorePropertiesFile = rootProject.file("explicitimage.properties");
+def keystoreProperties = new Properties()
+keystoreProperties.load(new FileInputStream(keystorePropertiesFile))
+
+def key = keystoreProperties['key']
+def user = keystoreProperties['user']
+def password = keystoreProperties['password']
+
+android {
+    compileSdkVersion 25
+    buildToolsVersion "25.0.1"
+    defaultConfig {
+        applicationId "dk.lndesign.explicitimage"
+        minSdkVersion 21
+        targetSdkVersion 25
+        versionCode 1
+        versionName "0.0.1"
+        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+        multiDexEnabled true
+
+        buildConfigField 'String', 'KEY', "\"${key}\""
+        buildConfigField 'String', 'USER', "\"${user}\""
+        buildConfigField 'String', 'PASSWORD', "\"${password}\""
+    }
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+    }
+}
+
+dependencies {
+    androidTestCompile('com.android.support.test.espresso:espresso-core:2.2.2', {
+        exclude group: 'com.android.support', module: 'support-annotations'
+    })
+    testCompile 'junit:junit:4.12'
+
+    compile 'com.squareup.okhttp3:okhttp:3.4.2'
+    compile 'com.github.bumptech.glide:okhttp3-integration:1.4.0@aar'
+    compile 'com.github.bumptech.glide:glide:3.7.0'
+
+    compile 'com.android.support:support-v4:25.0.1'
+    compile 'com.android.support:appcompat-v7:25.0.1'
+
+    compile 'com.google.android.gms:play-services:9.8.0'
+
+    compile 'com.google.firebase:firebase-core:9.8.0'
+    compile 'com.google.firebase:firebase-database:9.8.0'
+    compile 'com.google.firebase:firebase-storage:9.8.0'
+    compile 'com.google.firebase:firebase-auth:9.8.0'
+
+    compile 'com.squareup.retrofit2:retrofit:2.1.0'
+    compile 'com.squareup.retrofit2:converter-gson:2.1.0'
+}
+
+apply plugin: 'com.google.gms.google-services'

@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/activity_main"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context="dk.lndesign.explicitimage.MainActivity">
+
+    <TextView
+        android:id="@+id/user_text"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingTop="16dp"
+        android:paddingStart="8dp"
+        android:paddingEnd="8dp"
+        android:text="User: N/A" />
+
+    <Button
+        android:id="@+id/log_in_button"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Log in" />
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingTop="16dp"
+        android:paddingStart="8dp"
+        android:paddingEnd="8dp"
+        android:text="Get image from device:" />
+
+    <Button
+        android:id="@+id/get_image_button"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Get image" />
+
+    <ImageView
+        android:id="@+id/image_view"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:scaleType="fitCenter"
+        android:background="@android:color/holo_blue_dark"
+        android:padding="8dp"
+        android:layout_marginTop="8dp" />
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingTop="16dp"
+        android:paddingStart="8dp"
+        android:paddingEnd="8dp"
+        android:text="Annotate  image with Vision API:" />
+
+    <Button
+        android:id="@+id/annotate_image_button"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Annotate image" />
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingTop="16dp"
+        android:paddingStart="8dp"
+        android:paddingEnd="8dp"
+        android:text="Upload image to Firebase:" />
+
+    <Button
+        android:id="@+id/upload_image_button"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Upload image" />
+
+</LinearLayout>

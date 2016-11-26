@@ -36,9 +36,10 @@ captures/
 
 # Intellij
 *.iml
-.idea/workspace.xml
+.idea/
 
 # Keystore files
 *.jks
 
 explicitimage.properties
+google-services.json

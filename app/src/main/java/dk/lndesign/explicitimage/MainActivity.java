@@ -1,0 +1,336 @@
+package dk.lndesign.explicitimage;
+
+import android.content.Intent;
+import android.database.Cursor;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.net.Uri;
+import android.os.Bundle;
+import android.provider.MediaStore;
+import android.support.annotation.NonNull;
+import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
+import android.view.View;
+import android.widget.Button;
+import android.widget.ImageView;
+import android.widget.TextView;
+import android.widget.Toast;
+
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.AuthResult;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.storage.StorageMetadata;
+
+import java.io.File;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.Locale;
+
+import dk.lndesign.explicitimage.controller.DatabaseController;
+import dk.lndesign.explicitimage.controller.StorageController;
+import dk.lndesign.explicitimage.controller.VisionController;
+import dk.lndesign.explicitimage.model.ExplicitImage;
+import dk.lndesign.explicitimage.model.vision.response.AnnotateImageResponse;
+import dk.lndesign.explicitimage.model.vision.response.EntityAnnotation;
+import dk.lndesign.explicitimage.model.vision.response.VisionResultWrapper;
+
+/**
+ * Step 1: Log in.
+ * Step 2: Choose image from device.
+ * Step 3: Annotate image.
+ * Step 4: Upload image to remote storage.
+ * Step 5: Add image upload entry in database.
+ */
+public class MainActivity extends AppCompatActivity {
+
+    private static final String LOG_TAG = MainActivity.class.getSimpleName();
+    private static final int RESULT_LOAD_IMAGE = 1;
+
+    private AnnotateImageResponse mResponse;
+    private FirebaseAuth mAuth;
+    private FirebaseAuth.AuthStateListener mAuthListener;
+
+    private VisionController mVisionController = new VisionController();
+    private StorageController mStorageController = new StorageController();
+    private DatabaseController mDatabaseController = new DatabaseController();
+
+    private static final String PETER_TANEV_1 = "http://www.udeoghjemme.dk/sites/udeoghjemme.dk/files/media/websites/udeoghjemme-dot-dk/website2/2014/januar/01/journalister/mh/01-tanev-600.jpg";
+    private static final String PETER_TANEV_2 = "https://firebasestorage.googleapis.com/v0/b/json-crawler-backend.appspot.com/o/Peter-Tanev-small.jpg?alt=media&token=466e0e42-febb-41f9-b7a4-6a4d52d46c18";
+    private static final String PETER_TANEV_3 = "http://www.billedbladet.dk/sites/billedbladet.dk/files/styles/full_height_8grid/public/media/billedbladet/kendte/nyheder/peter-tanev/petertanev-poatraetkh.jpg";
+
+    private ImageView mImageView;
+    private TextView mUserText;
+    private Button mLoginButton;
+
+    private Bitmap mBitmap;
+    private Uri mImageUri;
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_main);
+
+        // Setup authentication.
+        mAuth = FirebaseAuth.getInstance();
+        mAuthListener = new FirebaseAuth.AuthStateListener() {
+            @Override
+            public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
+                FirebaseUser user = firebaseAuth.getCurrentUser();
+                if (user != null) {
+                    // User is signed in
+                    Log.d(LOG_TAG, "onAuthStateChanged: signed_in: " + user.getUid());
+                } else {
+                    // User is signed out
+                    Log.d(LOG_TAG, "onAuthStateChanged: signed_out");
+                }
+            }
+        };
+
+        mUserText = (TextView) findViewById(R.id.user_text);
+        mLoginButton = (Button) findViewById(R.id.log_in_button);
+        mLoginButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (mAuth.getCurrentUser() != null) {
+                    logOutUser();
+                } else {
+                    logInUser();
+                }
+            }
+        });
+
+        mImageView = (ImageView) findViewById(R.id.image_view);
+
+        Button getImageButton = (Button) findViewById(R.id.get_image_button);
+        getImageButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // http://stackoverflow.com/questions/11144783/how-to-access-an-image-from-the-phones-photo-gallery
+                Intent intent = new Intent(Intent.ACTION_PICK, android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+                startActivityForResult(intent, RESULT_LOAD_IMAGE);
+            }
+        });
+
+        final Button annotateImageButton = (Button) findViewById(R.id.annotate_image_button);
+        annotateImageButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+//                // Load image with Glide and display base 64 image.
+//                Glide.with(getApplicationContext()).load(PETER_TANEV_3).into(new SimpleTarget<GlideDrawable>() {
+//                    @Override
+//                    public void onResourceReady(GlideDrawable resource, GlideAnimation<? super GlideDrawable> glideAnimation) {
+//                        Log.i(LOG_TAG, "Glide: onResourceReady");
+//
+//                        mVisionController.annotateImage(resource, new VisionController.LoadingCallback<VisionResultWrapper>() {
+//                            @Override
+//                            public void onDataLoaded(VisionResultWrapper result) {
+//                                for (AnnotateImageResponse annotateImageResponse : result.getResponses()) {
+//
+//                                    Log.d(LOG_TAG, annotateImageResponse.getSafeSearchAnnotation().toString());
+//
+//                                    for (EntityAnnotation entityAnnotation : annotateImageResponse.getLabelAnnotations()) {
+//                                        Log.d(LOG_TAG, entityAnnotation.toString());
+//                                    }
+//                                }
+//                            }
+//
+//                            @Override
+//                            public void onFailed() {
+//
+//                            }
+//                        });
+//
+//                        String encodedImage = Base64Utils.drawableToBase64(resource);
+//                        mImageView.setImageBitmap(Base64Utils.base64ToBitmap(encodedImage));
+//                    }
+//                });
+                if (mBitmap != null) {
+                    mVisionController.annotateImage(mBitmap, new VisionController.LoadingCallback<VisionResultWrapper>() {
+                        @Override
+                        public void onDataLoaded(VisionResultWrapper result) {
+                            if (result.getResponses() != null && result.getResponses().get(0) != null) {
+                                mResponse = result.getResponses().get(0);
+                            }
+                            for (AnnotateImageResponse annotateImageResponse : result.getResponses()) {
+
+                                if (annotateImageResponse.getSafeSearchAnnotation() != null) {
+                                    Log.d(LOG_TAG, annotateImageResponse.getSafeSearchAnnotation().toString());
+                                } else {
+                                    Log.i(LOG_TAG, "No safe search available for this image");
+                                }
+
+                                if (annotateImageResponse.getLabelAnnotations() != null &&
+                                        !annotateImageResponse.getLabelAnnotations().isEmpty()) {
+
+                                    for (EntityAnnotation entityAnnotation : annotateImageResponse.getLabelAnnotations()) {
+                                        Log.d(LOG_TAG, entityAnnotation.toString());
+                                    }
+                                } else {
+                                    Log.i(LOG_TAG, "No label annotation available for this image");
+                                }
+                            }
+                        }
+
+                        @Override
+                        public void onFailed() {
+                            Log.e(LOG_TAG, "Image annotation failed");
+                        }
+                    });
+                } else {
+                    Log.e(LOG_TAG, "No image selected");
+                }
+            }
+        });
+
+        Button uploadImageButton = (Button) findViewById(R.id.upload_image_button);
+        uploadImageButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (mAuth.getCurrentUser() != null) {
+                    if (mResponse != null) {
+                        if (mImageUri != null) {
+                            mStorageController.uploadImage(mImageUri, new StorageController.UploadCallback<StorageMetadata>() {
+                                @Override
+                                public void onProgress(double progress) {
+
+                                }
+
+                                @Override
+                                public void onPause() {
+
+                                }
+
+                                @Override
+                                public void onFailure(@NonNull Exception exception) {
+
+                                }
+
+                                @Override
+                                public void onSuccess(@NonNull StorageMetadata metadata) {
+                                    if (mAuth.getCurrentUser() != null) {
+                                        ExplicitImage explicitImage = new ExplicitImage(
+                                                metadata.getPath(),
+                                                metadata.getDownloadUrl() != null ? metadata.getDownloadUrl().toString() : null,
+                                                getFormattedDate("yyyy-MM-dd'T'HH:mm:ss.SSSZ", metadata.getUpdatedTimeMillis()),
+                                                mResponse.getLabelAnnotations(),
+                                                mResponse.getSafeSearchAnnotation(),
+                                                mAuth.getCurrentUser().getUid(),
+                                                mAuth.getCurrentUser().getEmail()
+                                        );
+
+                                        mDatabaseController.pushExplicitImage(explicitImage);
+                                    } else {
+                                        Log.e(LOG_TAG, "User not logged in, cannot upload image to storage");
+                                    }
+                                }
+                            });
+                        } else {
+                            Log.e(LOG_TAG, "No image found, select image from device before uploading.");
+                        }
+                    } else {
+                        Log.e(LOG_TAG, "No image annotation response found, annotate image before uploading.");
+                    }
+                } else {
+                    Log.e(LOG_TAG, "User id not logged in, you must log in to upload image.");
+                }
+            }
+        });
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        // Attach authentication listener.
+        mAuth.addAuthStateListener(mAuthListener);
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+
+        if (mAuth.getCurrentUser() != null) {
+            mUserText.setText(
+                    String.format(Locale.ENGLISH, "User: %s", mAuth.getCurrentUser().getUid()));
+            mLoginButton.setText("Log out");
+        } else {
+            mUserText.setText("User: N/A");
+            mLoginButton.setText("Log in");
+        }
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        if (mAuthListener != null) {
+            // Detach authentication listener.
+            mAuth.removeAuthStateListener(mAuthListener);
+        }
+
+        mVisionController.cancelLoading();
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == RESULT_LOAD_IMAGE && resultCode == RESULT_OK && data != null) {
+            Uri selectedImage = data.getData();
+            Log.i(LOG_TAG, "Image uri: " + selectedImage.toString());
+            String[] filePathColumn = { MediaStore.Images.Media.DATA };
+            Cursor cursor = getContentResolver().query(selectedImage, filePathColumn, null, null, null);
+            if (cursor != null) {
+                cursor.moveToFirst();
+                int columnIndex = cursor.getColumnIndex(filePathColumn[0]);
+                String picturePath = cursor.getString(columnIndex);
+                Log.i(LOG_TAG, "Getting image at path: " + picturePath);
+                cursor.close();
+
+                mBitmap = BitmapFactory.decodeFile(picturePath);
+                mImageUri = Uri.fromFile(new File(picturePath));
+
+                if (mImageView != null) {
+                    mImageView.setImageBitmap(mBitmap);
+                }
+            }
+        }
+    }
+
+    private void logInUser() {
+        /*
+         * Logging user set in explicitimage.properties
+         */
+        mAuth.signInWithEmailAndPassword(BuildConfig.USER, BuildConfig.PASSWORD)
+                .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
+                    @Override
+                    public void onComplete(@NonNull Task<AuthResult> task) {
+                        Log.d(LOG_TAG, "signInWithEmail: onComplete:" + task.isSuccessful());
+
+                        if (!task.isSuccessful()) {
+                            Log.w(LOG_TAG, "signInWithEmail: failed", task.getException());
+                            Toast.makeText(MainActivity.this, R.string.auth_failed, Toast.LENGTH_SHORT).show();
+                        } else {
+                            mUserText.setText(
+                                    String.format(Locale.ENGLISH, "User: %s", task.getResult().getUser().getUid()));
+                            mLoginButton.setText("Log out");
+                        }
+                    }
+                });
+    }
+
+    private void logOutUser() {
+        mAuth.signOut();
+        mUserText.setText("User: N/A");
+        mLoginButton.setText("Log in");
+    }
+
+    private String getFormattedDate(String dateFormat, long timeStamp) {
+        return getFormattedDate(dateFormat, new Date(timeStamp));
+    }
+
+    private String getFormattedDate(String dateFormat, Date date) {
+        DateFormat sdf = new SimpleDateFormat(dateFormat, Locale.ENGLISH);
+        return sdf.format(date);
+    }
+}
