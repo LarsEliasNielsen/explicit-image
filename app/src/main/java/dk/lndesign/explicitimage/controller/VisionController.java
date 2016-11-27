@@ -159,7 +159,7 @@ public class VisionController {
             Log.w(LOG_TAG, identification + " request was canceled");
         } else {
             if (response != null) {
-                Log.e(LOG_TAG, identification + " request failed with: " + response.message());
+                Log.e(LOG_TAG, identification + " request failed with: " + response.message() + ", code: " + response.code());
             } else {
                 Log.e(LOG_TAG, identification + " request failed");
             }

@@ -55,7 +55,8 @@ public class DatabaseController {
     }
 
     public void getExplicitImages(final LoadingCallback<List<ExplicitImage>> callback) {
-        Query imageQuery = mDatabaseRef.child("images").limitToLast(100);
+        Query imageQuery = mDatabaseRef.child("images")
+                .limitToLast(100);
 
         imageQuery.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
@@ -63,7 +64,7 @@ public class DatabaseController {
                 List<ExplicitImage> images = new ArrayList<>();
 
                 for (DataSnapshot postSnapshot: dataSnapshot.getChildren()) {
-                    images.add(postSnapshot.getValue(ExplicitImage.class));
+                    images.add(0, postSnapshot.getValue(ExplicitImage.class));
                 }
                 callback.onDataChange(images);
             }
