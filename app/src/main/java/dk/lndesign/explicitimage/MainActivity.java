@@ -1,3 +1,6 @@
+/**
+ * Copyright (C) 2016 Lars Nielsen.
+ */
 package dk.lndesign.explicitimage;
 
 import android.content.Intent;
@@ -57,10 +60,6 @@ public class MainActivity extends AppCompatActivity {
     private StorageController mStorageController = new StorageController();
     private DatabaseController mDatabaseController = new DatabaseController();
 
-    private static final String PETER_TANEV_1 = "http://www.udeoghjemme.dk/sites/udeoghjemme.dk/files/media/websites/udeoghjemme-dot-dk/website2/2014/januar/01/journalister/mh/01-tanev-600.jpg";
-    private static final String PETER_TANEV_2 = "https://firebasestorage.googleapis.com/v0/b/json-crawler-backend.appspot.com/o/Peter-Tanev-small.jpg?alt=media&token=466e0e42-febb-41f9-b7a4-6a4d52d46c18";
-    private static final String PETER_TANEV_3 = "http://www.billedbladet.dk/sites/billedbladet.dk/files/styles/full_height_8grid/public/media/billedbladet/kendte/nyheder/peter-tanev/petertanev-poatraetkh.jpg";
-
     private ImageView mImageView;
     private TextView mUserText;
     private Button mLoginButton;
@@ -118,35 +117,6 @@ public class MainActivity extends AppCompatActivity {
         annotateImageButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-//                // Load image with Glide and display base 64 image.
-//                Glide.with(getApplicationContext()).load(PETER_TANEV_3).into(new SimpleTarget<GlideDrawable>() {
-//                    @Override
-//                    public void onResourceReady(GlideDrawable resource, GlideAnimation<? super GlideDrawable> glideAnimation) {
-//                        Log.i(LOG_TAG, "Glide: onResourceReady");
-//
-//                        mVisionController.annotateImage(resource, new VisionController.LoadingCallback<VisionResultWrapper>() {
-//                            @Override
-//                            public void onDataLoaded(VisionResultWrapper result) {
-//                                for (AnnotateImageResponse annotateImageResponse : result.getResponses()) {
-//
-//                                    Log.d(LOG_TAG, annotateImageResponse.getSafeSearchAnnotation().toString());
-//
-//                                    for (EntityAnnotation entityAnnotation : annotateImageResponse.getLabelAnnotations()) {
-//                                        Log.d(LOG_TAG, entityAnnotation.toString());
-//                                    }
-//                                }
-//                            }
-//
-//                            @Override
-//                            public void onFailed() {
-//
-//                            }
-//                        });
-//
-//                        String encodedImage = Base64Utils.drawableToBase64(resource);
-//                        mImageView.setImageBitmap(Base64Utils.base64ToBitmap(encodedImage));
-//                    }
-//                });
                 if (mBitmap != null) {
                     mVisionController.annotateImage(mBitmap, new VisionController.LoadingCallback<VisionResultWrapper>() {
                         @Override

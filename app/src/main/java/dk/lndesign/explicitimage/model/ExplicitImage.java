@@ -1,3 +1,6 @@
+/**
+ * Copyright (C) 2016 Lars Nielsen.
+ */
 package dk.lndesign.explicitimage.model;
 
 import com.google.firebase.database.Exclude;
@@ -11,9 +14,8 @@ import dk.lndesign.explicitimage.model.vision.response.EntityAnnotation;
 import dk.lndesign.explicitimage.model.vision.response.SafeSearchAnnotation;
 
 /**
- * Created by larn on 26/11/2016.
+ * @author Lars Nielsen <larn@tv2.dk>.
  */
-
 @IgnoreExtraProperties
 public class ExplicitImage {
 
@@ -25,6 +27,7 @@ public class ExplicitImage {
     private String userId;
     private String userEmail;
 
+    public ExplicitImage() {}
 
     public ExplicitImage(String imagePath,
                          String downloadPath,
