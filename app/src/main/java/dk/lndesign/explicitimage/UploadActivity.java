@@ -39,6 +39,7 @@ import dk.lndesign.explicitimage.model.ExplicitImage;
 import dk.lndesign.explicitimage.model.vision.response.AnnotateImageResponse;
 import dk.lndesign.explicitimage.model.vision.response.EntityAnnotation;
 import dk.lndesign.explicitimage.model.vision.response.VisionResultWrapper;
+import dk.lndesign.explicitimage.util.ExplicitImageUtil;
 
 /**
  * Step 1: Log in.
@@ -192,6 +193,7 @@ public class UploadActivity extends AppCompatActivity {
                                                 getFormattedDate("yyyy-MM-dd'T'HH:mm:ss.SSSZ", metadata.getUpdatedTimeMillis()),
                                                 mResponse.getLabelAnnotations(),
                                                 mResponse.getSafeSearchAnnotation(),
+                                                ExplicitImageUtil.getSafeSearchRestricted(mResponse.getSafeSearchAnnotation()),
                                                 mAuth.getCurrentUser().getUid(),
                                                 mAuth.getCurrentUser().getEmail()
                                         );

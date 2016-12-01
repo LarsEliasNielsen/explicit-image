@@ -64,7 +64,10 @@ public class DatabaseController {
                 List<ExplicitImage> images = new ArrayList<>();
 
                 for (DataSnapshot postSnapshot: dataSnapshot.getChildren()) {
-                    images.add(0, postSnapshot.getValue(ExplicitImage.class));
+                    // Image is only listed if no restrictions are violated.
+                    if (postSnapshot.getValue(ExplicitImage.class).isListed()) {
+                        images.add(0, postSnapshot.getValue(ExplicitImage.class));
+                    }
                 }
                 callback.onDataChange(images);
             }

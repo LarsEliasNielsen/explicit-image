@@ -35,7 +35,9 @@ public class GalleryRecyclerAdapter extends RecyclerView.Adapter<GalleryRecycler
         CardView mCardView;
         ImageView mImageView;
         TextView mImagePath;
+        View mImageLabelContainer;
         TextView mImageLabels;
+        View mSafeSearchContainer;
         TextView mSafeSearchAdult;
         TextView mSafeSearchSpoof;
         TextView mSafeSearchMedical;
@@ -46,7 +48,9 @@ public class GalleryRecyclerAdapter extends RecyclerView.Adapter<GalleryRecycler
             mCardView = (CardView) view.findViewById(R.id.card_view);
             mImageView = (ImageView) view.findViewById(R.id.image_view);
             mImagePath = (TextView) view.findViewById(R.id.image_path);
+            mImageLabelContainer = view.findViewById(R.id.label_container);
             mImageLabels = (TextView) view.findViewById(R.id.image_labels);
+            mSafeSearchContainer = view.findViewById(R.id.safe_search_container);
             mSafeSearchAdult = (TextView) view.findViewById(R.id.safe_search_adult);
             mSafeSearchSpoof = (TextView) view.findViewById(R.id.safe_search_spoof);
             mSafeSearchMedical = (TextView) view.findViewById(R.id.safe_search_medical);
@@ -102,35 +106,45 @@ public class GalleryRecyclerAdapter extends RecyclerView.Adapter<GalleryRecycler
 
         holder.mImagePath.setText(image.getImagePath());
 
-        StringBuilder labels = new StringBuilder();
-        for (EntityAnnotation entityAnnotation : image.getEntityAnnotations()) {
-            labels.append(String.format(Locale.ENGLISH,
-                    context.getString(R.string.image_label_entity),
-                    entityAnnotation.getDescription(),
-                    entityAnnotation.getScore() * 100));
-            labels.append(", ");
+        if (image.getEntityAnnotations() != null) {
+            StringBuilder labels = new StringBuilder();
+            for (EntityAnnotation entityAnnotation : image.getEntityAnnotations()) {
+                labels.append(String.format(Locale.ENGLISH,
+                        context.getString(R.string.image_label_entity),
+                        entityAnnotation.getDescription(),
+                        entityAnnotation.getScore() * 100));
+                labels.append(", ");
+            }
+            holder.mImageLabels.setText(labels.toString());
+            holder.mImageLabelContainer.setVisibility(View.VISIBLE);
+        } else {
+            holder.mImageLabelContainer.setVisibility(View.GONE);
         }
-        holder.mImageLabels.setText(labels.toString());
 
-        holder.mSafeSearchAdult.setText(String.format(Locale.ENGLISH,
-                context.getString(R.string.safe_search),
-                "Adult",
-                getSafeSearchValue(image.getSafeSearchAnnotation().getAdult())));
+        if (image.getSafeSearchAnnotation() != null) {
+            holder.mSafeSearchAdult.setText(String.format(Locale.ENGLISH,
+                    context.getString(R.string.safe_search),
+                    "Adult",
+                    getSafeSearchValue(image.getSafeSearchAnnotation().getAdult())));
 
-        holder.mSafeSearchSpoof.setText(String.format(Locale.ENGLISH,
-                context.getString(R.string.safe_search),
-                "Spoof",
-                getSafeSearchValue(image.getSafeSearchAnnotation().getSpoof())));
+            holder.mSafeSearchSpoof.setText(String.format(Locale.ENGLISH,
+                    context.getString(R.string.safe_search),
+                    "Spoof",
+                    getSafeSearchValue(image.getSafeSearchAnnotation().getSpoof())));
 
-        holder.mSafeSearchMedical.setText(String.format(Locale.ENGLISH,
-                context.getString(R.string.safe_search),
-                "Medical",
-                getSafeSearchValue(image.getSafeSearchAnnotation().getMedical())));
+            holder.mSafeSearchMedical.setText(String.format(Locale.ENGLISH,
+                    context.getString(R.string.safe_search),
+                    "Medical",
+                    getSafeSearchValue(image.getSafeSearchAnnotation().getMedical())));
 
-        holder.mSafeSearchViolence.setText(String.format(Locale.ENGLISH,
-                context.getString(R.string.safe_search),
-                "Violence",
-                getSafeSearchValue(image.getSafeSearchAnnotation().getViolence())));
+            holder.mSafeSearchViolence.setText(String.format(Locale.ENGLISH,
+                    context.getString(R.string.safe_search),
+                    "Violence",
+                    getSafeSearchValue(image.getSafeSearchAnnotation().getViolence())));
+            holder.mSafeSearchContainer.setVisibility(View.VISIBLE);
+        } else {
+            holder.mSafeSearchContainer.setVisibility(View.GONE);
+        }
     }
 
     private int getSafeSearchValue(@SafeSearchAnnotation.Likelihood String likelihood) {

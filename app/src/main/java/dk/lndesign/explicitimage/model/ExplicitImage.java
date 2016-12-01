@@ -24,6 +24,7 @@ public class ExplicitImage {
     private String imageUpdated;
     private List<EntityAnnotation> entityAnnotations;
     private SafeSearchAnnotation safeSearchAnnotation;
+    private boolean listed;
     private String userId;
     private String userEmail;
 
@@ -34,6 +35,7 @@ public class ExplicitImage {
                          String imageUpdated,
                          List<EntityAnnotation> entityAnnotations,
                          SafeSearchAnnotation safeSearchAnnotation,
+                         boolean listed,
                          String userId,
                          String userEmail) {
         this.imagePath = imagePath;
@@ -41,6 +43,7 @@ public class ExplicitImage {
         this.imageUpdated = imageUpdated;
         this.entityAnnotations = entityAnnotations;
         this.safeSearchAnnotation = safeSearchAnnotation;
+        this.listed = listed;
         this.userId = userId;
         this.userEmail = userEmail;
     }
@@ -65,6 +68,10 @@ public class ExplicitImage {
         return safeSearchAnnotation;
     }
 
+    public boolean isListed() {
+        return listed;
+    }
+
     public String getUserId() {
         return userId;
     }
@@ -81,6 +88,7 @@ public class ExplicitImage {
         result.put("imageUpdated", imageUpdated);
         result.put("entityAnnotations", entityAnnotations);
         result.put("safeSearchAnnotation", safeSearchAnnotation);
+        result.put("listed", listed);
         result.put("userId", userId);
         result.put("userEmail", userEmail);
 

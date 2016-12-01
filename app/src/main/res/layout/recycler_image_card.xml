@@ -40,58 +40,78 @@
                     android:ellipsize="end"
                     tools:text="/path/to/image"/>
 
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:textStyle="bold"
-                    android:text="Labels:" />
-
-                <TextView
-                    android:id="@+id/image_labels"
+                <LinearLayout
+                    android:id="@+id/label_container"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    tools:text="label1, label2"/>
+                    android:orientation="vertical"
+                    android:visibility="gone"
+                    tools:visibility="visible">
 
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:textStyle="bold"
-                    android:text="Safe search:" />
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textStyle="bold"
+                        android:text="Labels:" />
+
+                    <TextView
+                        android:id="@+id/image_labels"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        tools:text="label1, label2" />
+
+                </LinearLayout>
 
                 <LinearLayout
+                    android:id="@+id/safe_search_container"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:orientation="horizontal">
+                    android:orientation="vertical"
+                    android:visibility="gone"
+                    tools:visibility="visible">
 
                     <TextView
-                        android:id="@+id/safe_search_adult"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        tools:text="Adult: 0/5"
-                        android:layout_weight="1" />
+                        android:textStyle="bold"
+                        android:text="Safe search:" />
 
-                    <TextView
-                        android:id="@+id/safe_search_spoof"
-                        android:layout_width="wrap_content"
+                    <LinearLayout
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        tools:text="Spoof: 0/5"
-                        android:layout_weight="1" />
+                        android:orientation="horizontal">
 
-                    <TextView
-                        android:id="@+id/safe_search_medical"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        tools:text="Medical: 0/5"
-                        android:layout_weight="1" />
+                        <TextView
+                            android:id="@+id/safe_search_adult"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            tools:text="Adult: 0/5"
+                            android:layout_weight="1" />
 
-                    <TextView
-                        android:id="@+id/safe_search_violence"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        tools:text="Violence: 0/5"
-                        android:layout_weight="1" />
+                        <TextView
+                            android:id="@+id/safe_search_spoof"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            tools:text="Spoof: 0/5"
+                            android:layout_weight="1" />
+
+                        <TextView
+                            android:id="@+id/safe_search_medical"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            tools:text="Medical: 0/5"
+                            android:layout_weight="1" />
+
+                        <TextView
+                            android:id="@+id/safe_search_violence"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            tools:text="Violence: 0/5"
+                            android:layout_weight="1" />
 
                     </LinearLayout>
+
+                </LinearLayout>
 
             </LinearLayout>
 
