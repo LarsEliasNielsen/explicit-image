@@ -47,9 +47,9 @@ import dk.lndesign.explicitimage.model.vision.response.VisionResultWrapper;
  * Step 4: Upload image to remote storage.
  * Step 5: Add image upload entry in database.
  */
-public class MainActivity extends AppCompatActivity {
+public class UploadActivity extends AppCompatActivity {
 
-    private static final String LOG_TAG = MainActivity.class.getSimpleName();
+    private static final String LOG_TAG = UploadActivity.class.getSimpleName();
     private static final int RESULT_LOAD_IMAGE = 1;
 
     private AnnotateImageResponse mResponse;
@@ -71,6 +71,11 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        if (getSupportActionBar() != null) {
+            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+            getSupportActionBar().setDisplayShowHomeEnabled(true);
+        }
 
         // Setup authentication.
         mAuth = FirebaseAuth.getInstance();
@@ -279,7 +284,7 @@ public class MainActivity extends AppCompatActivity {
 
                         if (!task.isSuccessful()) {
                             Log.w(LOG_TAG, "signInWithEmail: failed", task.getException());
-                            Toast.makeText(MainActivity.this, R.string.auth_failed, Toast.LENGTH_SHORT).show();
+                            Toast.makeText(UploadActivity.this, R.string.auth_failed, Toast.LENGTH_SHORT).show();
                         } else {
                             mUserText.setText(
                                     String.format(Locale.ENGLISH, "User: %s", task.getResult().getUser().getUid()));

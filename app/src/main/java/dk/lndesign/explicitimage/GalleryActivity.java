@@ -50,7 +50,7 @@ public class GalleryActivity extends AppCompatActivity {
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(getBaseContext(), MainActivity.class);
+                Intent intent = new Intent(getBaseContext(), UploadActivity.class);
                 startActivity(intent);
             }
         });
