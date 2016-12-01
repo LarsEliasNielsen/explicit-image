@@ -129,6 +129,9 @@ public class UploadActivity extends AppCompatActivity {
                         public void onDataLoaded(VisionResultWrapper result) {
                             if (result.getResponses() != null && result.getResponses().get(0) != null) {
                                 mResponse = result.getResponses().get(0);
+                                Toast.makeText(getApplicationContext(), "Image annotation retrieved", Toast.LENGTH_SHORT).show();
+                            } else {
+                                Toast.makeText(getApplicationContext(), "Image annotation not found", Toast.LENGTH_SHORT).show();
                             }
                             for (AnnotateImageResponse annotateImageResponse : result.getResponses()) {
 
@@ -153,6 +156,7 @@ public class UploadActivity extends AppCompatActivity {
                         @Override
                         public void onFailed() {
                             Log.e(LOG_TAG, "Image annotation failed");
+                            Toast.makeText(getApplicationContext(), "Image annotation failed", Toast.LENGTH_SHORT).show();
                         }
                     });
                 } else {
@@ -170,19 +174,13 @@ public class UploadActivity extends AppCompatActivity {
                         if (mImageUri != null) {
                             mStorageController.uploadImage(mImageUri, new StorageController.UploadCallback<StorageMetadata>() {
                                 @Override
-                                public void onProgress(double progress) {
-
-                                }
+                                public void onProgress(double progress) {}
 
                                 @Override
-                                public void onPause() {
-
-                                }
+                                public void onPause() {}
 
                                 @Override
-                                public void onFailure(@NonNull Exception exception) {
-
-                                }
+                                public void onFailure(@NonNull Exception exception) {}
 
                                 @Override
                                 public void onSuccess(@NonNull StorageMetadata metadata) {
@@ -202,6 +200,7 @@ public class UploadActivity extends AppCompatActivity {
                                     } else {
                                         Log.e(LOG_TAG, "User not logged in, cannot upload image to storage");
                                     }
+                                    Toast.makeText(getApplicationContext(), "Image successfully uploaded", Toast.LENGTH_SHORT).show();
                                 }
                             });
                         } else {
