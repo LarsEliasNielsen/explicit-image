@@ -41,11 +41,10 @@ public class StorageController {
         void onSuccess(@NonNull StorageMetadata metadata);
     }
 
-    public void uploadImage(Uri imageUri, final UploadCallback<StorageMetadata> callback) {
-        // TODO: Build a better naming convention for image files.
+    public void uploadImage(String name, Uri imageUri, final UploadCallback<StorageMetadata> callback) {
         StorageReference newUploadRef = mStorageRef
                 .child("upload")
-                .child(imageUri.getLastPathSegment());
+                .child(name + ".jpg");
         UploadTask uploadTask = newUploadRef.putFile(
                 imageUri,
                 new StorageMetadata.Builder().setContentType("image/jpeg").build()
@@ -87,5 +86,9 @@ public class StorageController {
                 }
             }
         });
+    }
+
+    public void uploadImage(Uri imageUri, final UploadCallback<StorageMetadata> callback) {
+        uploadImage(imageUri.getLastPathSegment(), imageUri, callback);
     }
 }

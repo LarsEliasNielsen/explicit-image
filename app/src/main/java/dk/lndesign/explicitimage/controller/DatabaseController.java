@@ -39,9 +39,11 @@ public class DatabaseController {
         void onCancelled();
     }
 
-    public void pushExplicitImage(ExplicitImage explicitImage) {
-        // Get new key and image values.
-        String key = mDatabaseRef.child("images").push().getKey();
+    public String getNewImageChildKey() {
+        return mDatabaseRef.child("images").push().getKey();
+    }
+
+    public void pushExplicitImage(String key, ExplicitImage explicitImage) {
         Map<String, Object> postValues = explicitImage.toMap();
 
         // Update multiple references.
@@ -52,6 +54,13 @@ public class DatabaseController {
         }
 
         mDatabaseRef.updateChildren(childUpdates);
+    }
+
+    public void pushExplicitImage(ExplicitImage explicitImage) {
+        // Get new key and image values.
+        String key = mDatabaseRef.child("images").push().getKey();
+
+        pushExplicitImage(key, explicitImage);
     }
 
     public void getExplicitImages(final LoadingCallback<List<ExplicitImage>> callback) {

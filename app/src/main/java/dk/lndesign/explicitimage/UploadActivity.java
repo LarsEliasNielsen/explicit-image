@@ -172,7 +172,10 @@ public class UploadActivity extends AppCompatActivity {
                 if (mAuth.getCurrentUser() != null) {
                     if (mResponse != null) {
                         if (mImageUri != null) {
-                            mStorageController.uploadImage(mImageUri, new StorageController.UploadCallback<StorageMetadata>() {
+                            // Create a key for a new image in database and use its unique key for storage.
+                            final String key = mDatabaseController.getNewImageChildKey();
+
+                            mStorageController.uploadImage(key, mImageUri, new StorageController.UploadCallback<StorageMetadata>() {
                                 @Override
                                 public void onProgress(double progress) {
                                     progressBar.setProgress((int) progress);
@@ -198,7 +201,7 @@ public class UploadActivity extends AppCompatActivity {
                                                 mAuth.getCurrentUser().getEmail()
                                         );
 
-                                        mDatabaseController.pushExplicitImage(explicitImage);
+                                        mDatabaseController.pushExplicitImage(key, explicitImage);
                                     } else {
                                         Log.e(LOG_TAG, "User not logged in, cannot upload image to storage");
                                     }
