@@ -25,9 +25,6 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.storage.StorageMetadata;
 
 import java.io.IOException;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
-import java.util.Date;
 import java.util.Locale;
 
 import dk.lndesign.explicitimage.controller.DatabaseController;
@@ -38,6 +35,7 @@ import dk.lndesign.explicitimage.model.UserImage;
 import dk.lndesign.explicitimage.model.vision.response.AnnotateImageResponse;
 import dk.lndesign.explicitimage.model.vision.response.EntityAnnotation;
 import dk.lndesign.explicitimage.model.vision.response.VisionResultWrapper;
+import dk.lndesign.explicitimage.util.DateTimeUtils;
 import dk.lndesign.explicitimage.util.ExplicitImageUtil;
 
 /**
@@ -192,7 +190,7 @@ public class UploadActivity extends AppCompatActivity {
                                         ExplicitImage explicitImage = new ExplicitImage(
                                                 metadata.getPath(),
                                                 metadata.getDownloadUrl() != null ? metadata.getDownloadUrl().toString() : null,
-                                                getFormattedDate("yyyy-MM-dd'T'HH:mm:ss.SSSZ", metadata.getUpdatedTimeMillis()),
+                                                DateTimeUtils.getFormattedDate(DateTimeUtils.FORMAT_FULL, metadata.getUpdatedTimeMillis()),
                                                 mResponse.getLabelAnnotations(),
                                                 mResponse.getSafeSearchAnnotation(),
                                                 ExplicitImageUtil.getSafeSearchRestricted(mResponse.getSafeSearchAnnotation()),
@@ -298,14 +296,5 @@ public class UploadActivity extends AppCompatActivity {
         mAuth.signOut();
         mUserText.setText("User: N/A");
         mLoginButton.setText("Log in");
-    }
-
-    private String getFormattedDate(String dateFormat, long timeStamp) {
-        return getFormattedDate(dateFormat, new Date(timeStamp));
-    }
-
-    private String getFormattedDate(String dateFormat, Date date) {
-        DateFormat sdf = new SimpleDateFormat(dateFormat, Locale.ENGLISH);
-        return sdf.format(date);
     }
 }
