@@ -4,12 +4,9 @@
 package dk.lndesign.explicitimage;
 
 import android.content.Intent;
-import android.database.Cursor;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
-import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
@@ -27,7 +24,7 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.storage.StorageMetadata;
 
-import java.io.File;
+import java.io.IOException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -37,6 +34,7 @@ import dk.lndesign.explicitimage.controller.DatabaseController;
 import dk.lndesign.explicitimage.controller.StorageController;
 import dk.lndesign.explicitimage.controller.VisionController;
 import dk.lndesign.explicitimage.model.ExplicitImage;
+import dk.lndesign.explicitimage.model.UserImage;
 import dk.lndesign.explicitimage.model.vision.response.AnnotateImageResponse;
 import dk.lndesign.explicitimage.model.vision.response.EntityAnnotation;
 import dk.lndesign.explicitimage.model.vision.response.VisionResultWrapper;
@@ -114,9 +112,11 @@ public class UploadActivity extends AppCompatActivity {
         getImageButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                // http://stackoverflow.com/questions/11144783/how-to-access-an-image-from-the-phones-photo-gallery
-                Intent intent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
-                startActivityForResult(intent, RESULT_LOAD_IMAGE);
+                // http://stackoverflow.com/questions/2169649/get-pick-an-image-from-androids-built-in-gallery-app-programmatically
+                Intent intent = new Intent();
+                intent.setType("image/*");
+                intent.setAction(Intent.ACTION_GET_CONTENT);
+                startActivityForResult(Intent.createChooser(intent, "Select image"), RESULT_LOAD_IMAGE);
             }
         });
 
@@ -256,24 +256,18 @@ public class UploadActivity extends AppCompatActivity {
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == RESULT_LOAD_IMAGE && resultCode == RESULT_OK && data != null) {
-            Uri selectedImage = data.getData();
-            Log.i(LOG_TAG, "Image uri: " + selectedImage.toString());
+            mImageUri = data.getData();
+            Log.i(LOG_TAG, "Image uri: " + mImageUri.toString());
 
-            String[] filePathColumn = { MediaStore.Images.Media.DATA };
-            Cursor cursor = getContentResolver().query(selectedImage, filePathColumn, null, null, null);
-            if (cursor != null) {
-                cursor.moveToFirst();
-                int columnIndex = cursor.getColumnIndex(filePathColumn[0]);
-                String picturePath = cursor.getString(columnIndex);
-                Log.i(LOG_TAG, "Getting image at path: " + picturePath);
-                cursor.close();
-
-                mBitmap = BitmapFactory.decodeFile(picturePath);
-                mImageUri = Uri.fromFile(new File(picturePath));
+            try {
+                mBitmap = new UserImage(mImageUri, getContentResolver()).getBitmap();
 
                 if (mImageView != null) {
                     mImageView.setImageBitmap(mBitmap);
                 }
+            } catch (IOException e) {
+                Log.e(LOG_TAG, "Could not get selected image", e);
+                e.printStackTrace();
             }
         }
     }
