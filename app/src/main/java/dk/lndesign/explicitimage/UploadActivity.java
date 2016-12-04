@@ -16,6 +16,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -71,7 +72,7 @@ public class UploadActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+        setContentView(R.layout.activity_upload);
 
         if (getSupportActionBar() != null) {
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
@@ -114,7 +115,7 @@ public class UploadActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 // http://stackoverflow.com/questions/11144783/how-to-access-an-image-from-the-phones-photo-gallery
-                Intent intent = new Intent(Intent.ACTION_PICK, android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+                Intent intent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
                 startActivityForResult(intent, RESULT_LOAD_IMAGE);
             }
         });
@@ -166,6 +167,7 @@ public class UploadActivity extends AppCompatActivity {
         });
 
         Button uploadImageButton = (Button) findViewById(R.id.upload_image_button);
+        final ProgressBar progressBar = (ProgressBar) findViewById(R.id.progress_bar);
         uploadImageButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -174,7 +176,9 @@ public class UploadActivity extends AppCompatActivity {
                         if (mImageUri != null) {
                             mStorageController.uploadImage(mImageUri, new StorageController.UploadCallback<StorageMetadata>() {
                                 @Override
-                                public void onProgress(double progress) {}
+                                public void onProgress(double progress) {
+                                    progressBar.setProgress((int) progress);
+                                }
 
                                 @Override
                                 public void onPause() {}
@@ -254,6 +258,7 @@ public class UploadActivity extends AppCompatActivity {
         if (requestCode == RESULT_LOAD_IMAGE && resultCode == RESULT_OK && data != null) {
             Uri selectedImage = data.getData();
             Log.i(LOG_TAG, "Image uri: " + selectedImage.toString());
+
             String[] filePathColumn = { MediaStore.Images.Media.DATA };
             Cursor cursor = getContentResolver().query(selectedImage, filePathColumn, null, null, null);
             if (cursor != null) {
