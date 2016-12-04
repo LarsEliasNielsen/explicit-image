@@ -54,6 +54,11 @@ public class GalleryActivity extends AppCompatActivity {
                 startActivity(intent);
             }
         });
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
 
         updateImages();
     }

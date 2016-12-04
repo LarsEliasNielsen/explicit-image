@@ -190,13 +190,15 @@ public class UploadActivity extends AppCompatActivity {
                                 @Override
                                 public void onSuccess(@NonNull StorageMetadata metadata) {
                                     if (mAuth.getCurrentUser() != null) {
+                                        // TODO: Disabled safe search restriction for testing purposes.
                                         ExplicitImage explicitImage = new ExplicitImage(
                                                 metadata.getPath(),
                                                 metadata.getDownloadUrl() != null ? metadata.getDownloadUrl().toString() : null,
                                                 DateTimeUtils.getFormattedDate(DateTimeUtils.FORMAT_FULL, metadata.getUpdatedTimeMillis()),
                                                 mResponse.getLabelAnnotations(),
                                                 mResponse.getSafeSearchAnnotation(),
-                                                ExplicitImageUtil.getSafeSearchRestricted(mResponse.getSafeSearchAnnotation()),
+//                                                ExplicitImageUtil.getSafeSearchRestricted(mResponse.getSafeSearchAnnotation()),
+                                                true,
                                                 mAuth.getCurrentUser().getUid(),
                                                 mAuth.getCurrentUser().getEmail()
                                         );

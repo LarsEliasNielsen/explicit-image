@@ -81,33 +81,73 @@
                         android:layout_height="wrap_content"
                         android:orientation="horizontal">
 
-                        <TextView
-                            android:id="@+id/safe_search_adult"
+                        <RelativeLayout
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            tools:text="Adult: 0/5"
-                            android:layout_weight="1" />
+                            android:layout_weight="1">
+                            <TextView
+                                android:id="@+id/label_safe_search_adult"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="Adult: " />
+                            <TextView
+                                android:id="@+id/safe_search_adult"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_toEndOf="@id/label_safe_search_adult"
+                                tools:text="0/5" />
+                        </RelativeLayout>
 
-                        <TextView
-                            android:id="@+id/safe_search_spoof"
+                        <RelativeLayout
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            tools:text="Spoof: 0/5"
-                            android:layout_weight="1" />
+                            android:layout_weight="1">
+                            <TextView
+                                android:id="@+id/label_safe_search_spoof"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="Spoof: " />
+                            <TextView
+                                android:id="@+id/safe_search_spoof"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_toEndOf="@id/label_safe_search_spoof"
+                                tools:text="0/5" />
+                        </RelativeLayout>
 
-                        <TextView
-                            android:id="@+id/safe_search_medical"
+                        <RelativeLayout
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            tools:text="Medical: 0/5"
-                            android:layout_weight="1" />
+                            android:layout_weight="1">
+                            <TextView
+                                android:id="@+id/label_safe_search_medical"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="Medical: " />
+                            <TextView
+                                android:id="@+id/safe_search_medical"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_toEndOf="@id/label_safe_search_medical"
+                                tools:text="0/5" />
+                        </RelativeLayout>
 
-                        <TextView
-                            android:id="@+id/safe_search_violence"
+                        <RelativeLayout
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            tools:text="Violence: 0/5"
-                            android:layout_weight="1" />
+                            android:layout_weight="1">
+                            <TextView
+                                android:id="@+id/label_safe_search_violence"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="Violence: " />
+                            <TextView
+                                android:id="@+id/safe_search_violence"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_toEndOf="@id/label_safe_search_violence"
+                                tools:text="0/5" />
+                        </RelativeLayout>
 
                     </LinearLayout>
 

@@ -5,7 +5,9 @@ package dk.lndesign.explicitimage.adapter;
 
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Color;
 import android.support.annotation.NonNull;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -124,31 +126,53 @@ public class GalleryRecyclerAdapter extends RecyclerView.Adapter<GalleryRecycler
         if (image.getSafeSearchAnnotation() != null) {
             holder.mSafeSearchAdult.setText(String.format(Locale.ENGLISH,
                     context.getString(R.string.safe_search),
-                    "Adult",
                     getSafeSearchValue(image.getSafeSearchAnnotation().getAdult())));
+            setSafeSearchTextColor(holder.mSafeSearchAdult, image.getSafeSearchAnnotation().getAdult());
 
             holder.mSafeSearchSpoof.setText(String.format(Locale.ENGLISH,
                     context.getString(R.string.safe_search),
-                    "Spoof",
                     getSafeSearchValue(image.getSafeSearchAnnotation().getSpoof())));
+            setSafeSearchTextColor(holder.mSafeSearchSpoof, image.getSafeSearchAnnotation().getSpoof());
 
             holder.mSafeSearchMedical.setText(String.format(Locale.ENGLISH,
                     context.getString(R.string.safe_search),
-                    "Medical",
                     getSafeSearchValue(image.getSafeSearchAnnotation().getMedical())));
+            setSafeSearchTextColor(holder.mSafeSearchMedical, image.getSafeSearchAnnotation().getMedical());
 
             holder.mSafeSearchViolence.setText(String.format(Locale.ENGLISH,
                     context.getString(R.string.safe_search),
-                    "Violence",
                     getSafeSearchValue(image.getSafeSearchAnnotation().getViolence())));
+            setSafeSearchTextColor(holder.mSafeSearchViolence, image.getSafeSearchAnnotation().getViolence());
+
             holder.mSafeSearchContainer.setVisibility(View.VISIBLE);
         } else {
             holder.mSafeSearchContainer.setVisibility(View.GONE);
         }
     }
 
+    private void setSafeSearchTextColor(TextView textView, @SafeSearchAnnotation.Likelihood String likelihood) {
+        switch (likelihood) {
+            case SafeSearchAnnotation.LIKELIHOOD_VERY_UNLIKELY:
+                textView.setTextColor(ContextCompat.getColor(textView.getContext(), R.color.warning_low_level));
+                break;
+            case SafeSearchAnnotation.LIKELIHOOD_UNLIKELY:
+            case SafeSearchAnnotation.LIKELIHOOD_POSSIBLE:
+                textView.setTextColor(ContextCompat.getColor(textView.getContext(), R.color.warning_mid_level));
+                break;
+            case SafeSearchAnnotation.LIKELIHOOD_LIKELY:
+            case SafeSearchAnnotation.LIKELIHOOD_VERY_LIKELY:
+                textView.setTextColor(ContextCompat.getColor(textView.getContext(), R.color.warning_high_level));
+                break;
+            case SafeSearchAnnotation.LIKELIHOOD_UNKNOWN:
+                textView.setTextColor(Color.BLACK);
+                break;
+            default:
+                break;
+        }
+    }
+
     private int getSafeSearchValue(@SafeSearchAnnotation.Likelihood String likelihood) {
-        switch(likelihood) {
+        switch (likelihood) {
             case SafeSearchAnnotation.LIKELIHOOD_VERY_UNLIKELY:
                 return 1;
             case SafeSearchAnnotation.LIKELIHOOD_UNLIKELY:
