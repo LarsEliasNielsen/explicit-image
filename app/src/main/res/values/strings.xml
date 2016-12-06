@@ -1,6 +1,5 @@
 <resources>
     <string name="app_name">Explicit Image</string>
-    <string name="gallery">Gallery</string>
     <string name="image_viewer">Image viewer</string>
     <string name="upload_image">Upload image</string>
 
