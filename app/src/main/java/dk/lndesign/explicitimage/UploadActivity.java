@@ -105,11 +105,18 @@ public class UploadActivity extends AppCompatActivity {
         });
 
         mImageView = (ImageView) findViewById(R.id.image_view);
+        final ProgressBar progressBar = (ProgressBar) findViewById(R.id.progress_bar);
 
         Button getImageButton = (Button) findViewById(R.id.get_image_button);
         getImageButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                // Reset image, progress bar and image annotation.
+                mBitmap = null;
+                mImageUri = null;
+                progressBar.setProgress(0);
+                mResponse = null;
+
                 // http://stackoverflow.com/questions/2169649/get-pick-an-image-from-androids-built-in-gallery-app-programmatically
                 Intent intent = new Intent();
                 intent.setType("image/*");
@@ -165,7 +172,6 @@ public class UploadActivity extends AppCompatActivity {
         });
 
         Button uploadImageButton = (Button) findViewById(R.id.upload_image_button);
-        final ProgressBar progressBar = (ProgressBar) findViewById(R.id.progress_bar);
         uploadImageButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -204,6 +210,9 @@ public class UploadActivity extends AppCompatActivity {
                                         );
 
                                         mDatabaseController.pushExplicitImage(key, explicitImage);
+
+//                                        // Reset image annonation.
+//                                        mResponse = null;
                                     } else {
                                         Log.e(LOG_TAG, "User not logged in, cannot upload image to storage");
                                     }
