@@ -3,14 +3,18 @@
  */
 package dk.lndesign.explicitimage;
 
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
-import android.support.v7.app.AppCompatActivity;
+import android.support.annotation.Nullable;
+import android.support.v4.app.Fragment;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
@@ -36,7 +40,8 @@ import dk.lndesign.explicitimage.model.vision.response.AnnotateImageResponse;
 import dk.lndesign.explicitimage.model.vision.response.EntityAnnotation;
 import dk.lndesign.explicitimage.model.vision.response.VisionResultWrapper;
 import dk.lndesign.explicitimage.util.DateTimeUtils;
-import dk.lndesign.explicitimage.util.ExplicitImageUtil;
+
+import static android.app.Activity.RESULT_OK;
 
 /**
  * Step 1: Log in.
@@ -45,10 +50,12 @@ import dk.lndesign.explicitimage.util.ExplicitImageUtil;
  * Step 4: Upload image to remote storage.
  * Step 5: Add image upload entry in database.
  */
-public class UploadActivity extends AppCompatActivity {
+public class UploadFragment extends Fragment {
 
-    private static final String LOG_TAG = UploadActivity.class.getSimpleName();
+    private static final String LOG_TAG = UploadFragment.class.getSimpleName();
     private static final int RESULT_LOAD_IMAGE = 1;
+
+    private Context mContext;
 
     private AnnotateImageResponse mResponse;
     private FirebaseAuth mAuth;
@@ -65,15 +72,11 @@ public class UploadActivity extends AppCompatActivity {
     private Bitmap mBitmap;
     private Uri mImageUri;
 
+    @Nullable
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_upload);
-
-        if (getSupportActionBar() != null) {
-            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-            getSupportActionBar().setDisplayShowHomeEnabled(true);
-        }
+    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+        View view = inflater.inflate(R.layout.fragment_upload, container, false);
+        mContext = view.getContext();
 
         // Setup authentication.
         mAuth = FirebaseAuth.getInstance();
@@ -91,8 +94,8 @@ public class UploadActivity extends AppCompatActivity {
             }
         };
 
-        mUserText = (TextView) findViewById(R.id.user_text);
-        mLoginButton = (Button) findViewById(R.id.log_in_button);
+        mUserText = (TextView) view.findViewById(R.id.user_text);
+        mLoginButton = (Button) view.findViewById(R.id.log_in_button);
         mLoginButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -104,10 +107,10 @@ public class UploadActivity extends AppCompatActivity {
             }
         });
 
-        mImageView = (ImageView) findViewById(R.id.image_view);
-        final ProgressBar progressBar = (ProgressBar) findViewById(R.id.progress_bar);
+        mImageView = (ImageView) view.findViewById(R.id.image_view);
+        final ProgressBar progressBar = (ProgressBar) view.findViewById(R.id.progress_bar);
 
-        Button getImageButton = (Button) findViewById(R.id.get_image_button);
+        Button getImageButton = (Button) view.findViewById(R.id.get_image_button);
         getImageButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -125,7 +128,7 @@ public class UploadActivity extends AppCompatActivity {
             }
         });
 
-        final Button annotateImageButton = (Button) findViewById(R.id.annotate_image_button);
+        final Button annotateImageButton = (Button) view.findViewById(R.id.annotate_image_button);
         annotateImageButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -135,9 +138,9 @@ public class UploadActivity extends AppCompatActivity {
                         public void onDataLoaded(VisionResultWrapper result) {
                             if (result.getResponses() != null && result.getResponses().get(0) != null) {
                                 mResponse = result.getResponses().get(0);
-                                Toast.makeText(getApplicationContext(), "Image annotation retrieved", Toast.LENGTH_SHORT).show();
+                                Toast.makeText(mContext, "Image annotation retrieved", Toast.LENGTH_SHORT).show();
                             } else {
-                                Toast.makeText(getApplicationContext(), "Image annotation not found", Toast.LENGTH_SHORT).show();
+                                Toast.makeText(mContext, "Image annotation not found", Toast.LENGTH_SHORT).show();
                             }
                             for (AnnotateImageResponse annotateImageResponse : result.getResponses()) {
 
@@ -162,7 +165,7 @@ public class UploadActivity extends AppCompatActivity {
                         @Override
                         public void onFailed() {
                             Log.e(LOG_TAG, "Image annotation failed");
-                            Toast.makeText(getApplicationContext(), "Image annotation failed", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(mContext, "Image annotation failed", Toast.LENGTH_SHORT).show();
                         }
                     });
                 } else {
@@ -171,7 +174,7 @@ public class UploadActivity extends AppCompatActivity {
             }
         });
 
-        Button uploadImageButton = (Button) findViewById(R.id.upload_image_button);
+        Button uploadImageButton = (Button) view.findViewById(R.id.upload_image_button);
         uploadImageButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -216,7 +219,7 @@ public class UploadActivity extends AppCompatActivity {
                                     } else {
                                         Log.e(LOG_TAG, "User not logged in, cannot upload image to storage");
                                     }
-                                    Toast.makeText(getApplicationContext(), "Image successfully uploaded", Toast.LENGTH_SHORT).show();
+                                    Toast.makeText(mContext, "Image successfully uploaded", Toast.LENGTH_SHORT).show();
                                 }
                             });
                         } else {
@@ -230,17 +233,19 @@ public class UploadActivity extends AppCompatActivity {
                 }
             }
         });
+
+        return view;
     }
 
     @Override
-    protected void onStart() {
+    public void onStart() {
         super.onStart();
         // Attach authentication listener.
         mAuth.addAuthStateListener(mAuthListener);
     }
 
     @Override
-    protected void onResume() {
+    public void onResume() {
         super.onResume();
 
         if (mAuth.getCurrentUser() != null) {
@@ -254,7 +259,7 @@ public class UploadActivity extends AppCompatActivity {
     }
 
     @Override
-    protected void onStop() {
+    public void onStop() {
         super.onStop();
         if (mAuthListener != null) {
             // Detach authentication listener.
@@ -265,14 +270,14 @@ public class UploadActivity extends AppCompatActivity {
     }
 
     @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == RESULT_LOAD_IMAGE && resultCode == RESULT_OK && data != null) {
             mImageUri = data.getData();
             Log.i(LOG_TAG, "Image uri: " + mImageUri.toString());
 
             try {
-                mBitmap = new UserImage(mImageUri, getContentResolver()).getBitmap();
+                mBitmap = new UserImage(mImageUri, mContext.getContentResolver()).getBitmap();
 
                 if (mImageView != null) {
                     mImageView.setImageBitmap(mBitmap);
@@ -289,14 +294,14 @@ public class UploadActivity extends AppCompatActivity {
          * Logging user set in explicitimage.properties
          */
         mAuth.signInWithEmailAndPassword(BuildConfig.USER, BuildConfig.PASSWORD)
-                .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
+                .addOnCompleteListener(new OnCompleteListener<AuthResult>() {
                     @Override
                     public void onComplete(@NonNull Task<AuthResult> task) {
                         Log.d(LOG_TAG, "signInWithEmail: onComplete:" + task.isSuccessful());
 
                         if (!task.isSuccessful()) {
                             Log.w(LOG_TAG, "signInWithEmail: failed", task.getException());
-                            Toast.makeText(UploadActivity.this, R.string.auth_failed, Toast.LENGTH_SHORT).show();
+                            Toast.makeText(mContext, R.string.auth_failed, Toast.LENGTH_SHORT).show();
                         } else {
                             mUserText.setText(
                                     String.format(Locale.ENGLISH, "User: %s", task.getResult().getUser().getUid()));

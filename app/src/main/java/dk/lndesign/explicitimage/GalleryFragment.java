@@ -3,16 +3,19 @@
  */
 package dk.lndesign.explicitimage;
 
+import android.content.Context;
 import android.content.Intent;
-import android.content.res.Configuration;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
+import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.StaggeredGridLayoutManager;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 
 import java.util.List;
 
@@ -22,32 +25,35 @@ import dk.lndesign.explicitimage.model.ExplicitImage;
 import dk.lndesign.explicitimage.util.CompatibilityUtil;
 
 /**
- * @author Lars Nielsen <larn@tv2.dk>.
+ * @author Lars Nielsen <lars@lndesign.dk>.
  */
-public class GalleryActivity extends AppCompatActivity {
+public class GalleryFragment extends Fragment {
 
     private DatabaseController mDatabase = new DatabaseController();
+
+    private Context mContext;
 
     private GalleryRecyclerAdapter mRecycleAdapter;
     private SwipeRefreshLayout mRefreshLayout;
 
+    @Nullable
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_gallery);
+    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+        View view = inflater.inflate(R.layout.fragment_gallery, container, false);
+        mContext = view.getContext();
 
-        RecyclerView recyclerView = (RecyclerView) findViewById(R.id.recycler_view);
+        RecyclerView recyclerView = (RecyclerView) view.findViewById(R.id.recycler_view);
         mRecycleAdapter = new GalleryRecyclerAdapter();
         recyclerView.setAdapter(mRecycleAdapter);
-        if (CompatibilityUtil.isTablet(this) || CompatibilityUtil.isLandscape(this)) {
+        if (CompatibilityUtil.isTablet(mContext) || CompatibilityUtil.isLandscape(mContext)) {
             // Tablet layout.
             recyclerView.setLayoutManager(new StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL));
         } else {
             // Phone layout.
-            recyclerView.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false));
+            recyclerView.setLayoutManager(new LinearLayoutManager(mContext, LinearLayoutManager.VERTICAL, false));
         }
 
-        mRefreshLayout = (SwipeRefreshLayout) findViewById(R.id.swipe_refresh_layout);
+        mRefreshLayout = (SwipeRefreshLayout) view.findViewById(R.id.swipe_refresh_layout);
         mRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
@@ -55,18 +61,20 @@ public class GalleryActivity extends AppCompatActivity {
             }
         });
 
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
+        FloatingActionButton fab = (FloatingActionButton) view.findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(getBaseContext(), UploadActivity.class);
+                Intent intent = new Intent(mContext, UploadFragment.class);
                 startActivity(intent);
             }
         });
+
+        return view;
     }
 
     @Override
-    protected void onResume() {
+    public void onResume() {
         super.onResume();
 
         updateImages();

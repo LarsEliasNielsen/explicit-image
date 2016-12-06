@@ -6,7 +6,7 @@
     android:id="@+id/activity_gallery"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="dk.lndesign.explicitimage.GalleryActivity">
+    tools:context="dk.lndesign.explicitimage.GalleryFragment">
 
     <android.support.v4.widget.SwipeRefreshLayout
         android:id="@+id/swipe_refresh_layout"
