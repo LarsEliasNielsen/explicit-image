@@ -10,14 +10,16 @@ import android.support.v4.app.FragmentPagerAdapter;
 import java.util.ArrayList;
 import java.util.List;
 
+import dk.lndesign.explicitimage.view.PagerFragment;
+
 /**
  * @author Lars Nielsen <lars@lndesign.dk>
  */
 public class PagerAdapter extends FragmentPagerAdapter {
 
-    private List<Fragment> mItems = new ArrayList<>();
+    private List<PagerFragment> mItems = new ArrayList<>();
 
-    public PagerAdapter(FragmentManager fm, List<Fragment> items) {
+    public PagerAdapter(FragmentManager fm, List<PagerFragment> items) {
         super(fm);
 
         mItems = items;
@@ -35,6 +37,6 @@ public class PagerAdapter extends FragmentPagerAdapter {
 
     @Override
     public CharSequence getPageTitle(int position) {
-        return "Hi";
+        return mItems.get(position).getTitle();
     }
 }

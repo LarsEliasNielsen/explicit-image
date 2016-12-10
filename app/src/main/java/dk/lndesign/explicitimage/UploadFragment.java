@@ -40,6 +40,7 @@ import dk.lndesign.explicitimage.model.vision.response.AnnotateImageResponse;
 import dk.lndesign.explicitimage.model.vision.response.EntityAnnotation;
 import dk.lndesign.explicitimage.model.vision.response.VisionResultWrapper;
 import dk.lndesign.explicitimage.util.DateTimeUtils;
+import dk.lndesign.explicitimage.view.PagerFragment;
 
 import static android.app.Activity.RESULT_OK;
 
@@ -50,10 +51,11 @@ import static android.app.Activity.RESULT_OK;
  * Step 4: Upload image to remote storage.
  * Step 5: Add image upload entry in database.
  */
-public class UploadFragment extends Fragment {
+public class UploadFragment extends PagerFragment {
 
     private static final String LOG_TAG = UploadFragment.class.getSimpleName();
     private static final int RESULT_LOAD_IMAGE = 1;
+    private static final String KEY_FRAGMENT_TITLE = "fragment_title";
 
     private Context mContext;
 
@@ -71,6 +73,19 @@ public class UploadFragment extends Fragment {
 
     private Bitmap mBitmap;
     private Uri mImageUri;
+
+    public static UploadFragment newInstance(String title) {
+        UploadFragment fragment = new UploadFragment();
+        Bundle args = new Bundle(1);
+        args.putString(KEY_FRAGMENT_TITLE, title);
+        fragment.setArguments(args);
+        return fragment;
+    }
+
+    @Override
+    public String getTitle() {
+        return getArguments().getString(KEY_FRAGMENT_TITLE, null);
+    }
 
     @Nullable
     @Override

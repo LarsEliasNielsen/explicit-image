@@ -8,7 +8,6 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
-import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -23,11 +22,14 @@ import dk.lndesign.explicitimage.adapter.GalleryRecyclerAdapter;
 import dk.lndesign.explicitimage.controller.DatabaseController;
 import dk.lndesign.explicitimage.model.ExplicitImage;
 import dk.lndesign.explicitimage.util.CompatibilityUtil;
+import dk.lndesign.explicitimage.view.PagerFragment;
 
 /**
  * @author Lars Nielsen <lars@lndesign.dk>.
  */
-public class GalleryFragment extends Fragment {
+public class GalleryFragment extends PagerFragment {
+
+    private static final String KEY_FRAGMENT_TITLE = "fragment_title";
 
     private DatabaseController mDatabase = new DatabaseController();
 
@@ -35,6 +37,19 @@ public class GalleryFragment extends Fragment {
 
     private GalleryRecyclerAdapter mRecycleAdapter;
     private SwipeRefreshLayout mRefreshLayout;
+
+    public static GalleryFragment newInstance(String title) {
+        GalleryFragment fragment = new GalleryFragment();
+        Bundle args = new Bundle(1);
+        args.putString(KEY_FRAGMENT_TITLE, title);
+        fragment.setArguments(args);
+        return fragment;
+    }
+
+    @Override
+    public String getTitle() {
+        return getArguments().getString(KEY_FRAGMENT_TITLE, null);
+    }
 
     @Nullable
     @Override
