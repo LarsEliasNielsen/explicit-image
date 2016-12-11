@@ -33,8 +33,6 @@ public class GalleryFragment extends PagerFragment {
 
     private DatabaseController mDatabase = new DatabaseController();
 
-    private Context mContext;
-
     private GalleryRecyclerAdapter mRecycleAdapter;
     private SwipeRefreshLayout mRefreshLayout;
 
@@ -55,17 +53,17 @@ public class GalleryFragment extends PagerFragment {
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_gallery, container, false);
-        mContext = view.getContext();
+        Context context = view.getContext();
 
         RecyclerView recyclerView = (RecyclerView) view.findViewById(R.id.recycler_view);
         mRecycleAdapter = new GalleryRecyclerAdapter();
         recyclerView.setAdapter(mRecycleAdapter);
-        if (CompatibilityUtil.isTablet(mContext) || CompatibilityUtil.isLandscape(mContext)) {
+        if (CompatibilityUtil.isTablet(context) || CompatibilityUtil.isLandscape(context)) {
             // Tablet layout.
             recyclerView.setLayoutManager(new StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL));
         } else {
             // Phone layout.
-            recyclerView.setLayoutManager(new LinearLayoutManager(mContext, LinearLayoutManager.VERTICAL, false));
+            recyclerView.setLayoutManager(new LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false));
         }
 
         mRefreshLayout = (SwipeRefreshLayout) view.findViewById(R.id.swipe_refresh_layout);
@@ -73,15 +71,6 @@ public class GalleryFragment extends PagerFragment {
             @Override
             public void onRefresh() {
                 updateImages();
-            }
-        });
-
-        FloatingActionButton fab = (FloatingActionButton) view.findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent intent = new Intent(mContext, UploadFragment.class);
-                startActivity(intent);
             }
         });
 

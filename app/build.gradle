@@ -22,6 +22,8 @@ android {
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
         multiDexEnabled true
 
+        setProperty("archivesBaseName", "explicit-image-${versionName}-r${versionCode}")
+
         buildConfigField 'String', 'KEY', "\"${key}\""
         buildConfigField 'String', 'USER', "\"${user}\""
         buildConfigField 'String', 'PASSWORD', "\"${password}\""
