@@ -3,8 +3,22 @@
     <string name="image_viewer">Image viewer</string>
     <string name="upload_image">Upload image</string>
 
+    <string name="log_in">Log in</string>
     <string name="auth_failed">User authentication failed</string>
 
+    <string name="headline_safe_search">Safe search:</string>
+    <string name="safe_search_adult">Adult:</string>
+    <string name="safe_search_spoof">Spoof:</string>
+    <string name="safe_search_medical">Medical:</string>
+    <string name="safe_search_violence">Violence:</string>
     <string name="image_label_entity" formatted="false">%1$s (%2$.1f%%)</string>
     <string name="safe_search">%d/5</string>
+
+    <string name="get_device_image">Get image from device:</string>
+    <string name="get_image_button">Get image</string>
+    <string name="chosen_image">Chosen image</string>
+    <string name="vision_image_annotate">Annotate image with Vision API:</string>
+    <string name="annotate_image_button">Annotate image</string>
+    <string name="firebase_image_upload">Upload image to Firebase:</string>
+    <string name="upload_image_button">Upload image</string>
 </resources>

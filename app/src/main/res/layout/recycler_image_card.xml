@@ -74,7 +74,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:textStyle="bold"
-                        android:text="Safe search:" />
+                        android:text="@string/headline_safe_search" />
 
                     <LinearLayout
                         android:layout_width="match_parent"
@@ -89,7 +89,7 @@
                                 android:id="@+id/label_safe_search_adult"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:text="Adult: " />
+                                android:text="@string/safe_search_adult" />
                             <TextView
                                 android:id="@+id/safe_search_adult"
                                 android:layout_width="wrap_content"
@@ -106,7 +106,7 @@
                                 android:id="@+id/label_safe_search_spoof"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:text="Spoof: " />
+                                android:text="@string/safe_search_spoof" />
                             <TextView
                                 android:id="@+id/safe_search_spoof"
                                 android:layout_width="wrap_content"
@@ -123,7 +123,7 @@
                                 android:id="@+id/label_safe_search_medical"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:text="Medical: " />
+                                android:text="@string/safe_search_medical" />
                             <TextView
                                 android:id="@+id/safe_search_medical"
                                 android:layout_width="wrap_content"
@@ -140,7 +140,7 @@
                                 android:id="@+id/label_safe_search_violence"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:text="Violence: " />
+                                android:text="@string/safe_search_violence" />
                             <TextView
                                 android:id="@+id/safe_search_violence"
                                 android:layout_width="wrap_content"

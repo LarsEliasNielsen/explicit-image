@@ -61,15 +61,12 @@ public class UploadFragment extends PagerFragment {
 
     private AnnotateImageResponse mResponse;
     private FirebaseAuth mAuth;
-    private FirebaseAuth.AuthStateListener mAuthListener;
 
     private VisionController mVisionController = new VisionController();
     private StorageController mStorageController = new StorageController();
     private DatabaseController mDatabaseController = new DatabaseController();
 
     private ImageView mImageView;
-    private TextView mUserText;
-    private Button mLoginButton;
 
     private Bitmap mBitmap;
     private Uri mImageUri;
@@ -93,34 +90,7 @@ public class UploadFragment extends PagerFragment {
         View view = inflater.inflate(R.layout.fragment_upload, container, false);
         mContext = view.getContext();
 
-        // Setup authentication.
         mAuth = FirebaseAuth.getInstance();
-        mAuthListener = new FirebaseAuth.AuthStateListener() {
-            @Override
-            public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
-                FirebaseUser user = firebaseAuth.getCurrentUser();
-                if (user != null) {
-                    // User is signed in
-                    Log.d(LOG_TAG, "onAuthStateChanged: signed_in: " + user.getUid());
-                } else {
-                    // User is signed out
-                    Log.d(LOG_TAG, "onAuthStateChanged: signed_out");
-                }
-            }
-        };
-
-        mUserText = (TextView) view.findViewById(R.id.user_text);
-        mLoginButton = (Button) view.findViewById(R.id.log_in_button);
-        mLoginButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if (mAuth.getCurrentUser() != null) {
-                    logOutUser();
-                } else {
-                    logInUser();
-                }
-            }
-        });
 
         mImageView = (ImageView) view.findViewById(R.id.image_view);
         final ProgressBar progressBar = (ProgressBar) view.findViewById(R.id.progress_bar);
@@ -253,33 +223,8 @@ public class UploadFragment extends PagerFragment {
     }
 
     @Override
-    public void onStart() {
-        super.onStart();
-        // Attach authentication listener.
-        mAuth.addAuthStateListener(mAuthListener);
-    }
-
-    @Override
-    public void onResume() {
-        super.onResume();
-
-        if (mAuth.getCurrentUser() != null) {
-            mUserText.setText(
-                    String.format(Locale.ENGLISH, "User: %s", mAuth.getCurrentUser().getUid()));
-            mLoginButton.setText("Log out");
-        } else {
-            mUserText.setText("User: N/A");
-            mLoginButton.setText("Log in");
-        }
-    }
-
-    @Override
     public void onStop() {
         super.onStop();
-        if (mAuthListener != null) {
-            // Detach authentication listener.
-            mAuth.removeAuthStateListener(mAuthListener);
-        }
 
         mVisionController.cancelLoading();
     }
@@ -302,33 +247,5 @@ public class UploadFragment extends PagerFragment {
                 e.printStackTrace();
             }
         }
-    }
-
-    private void logInUser() {
-        /*
-         * Logging user set in explicitimage.properties
-         */
-        mAuth.signInWithEmailAndPassword(BuildConfig.USER, BuildConfig.PASSWORD)
-                .addOnCompleteListener(new OnCompleteListener<AuthResult>() {
-                    @Override
-                    public void onComplete(@NonNull Task<AuthResult> task) {
-                        Log.d(LOG_TAG, "signInWithEmail: onComplete:" + task.isSuccessful());
-
-                        if (!task.isSuccessful()) {
-                            Log.w(LOG_TAG, "signInWithEmail: failed", task.getException());
-                            Toast.makeText(mContext, R.string.auth_failed, Toast.LENGTH_SHORT).show();
-                        } else {
-                            mUserText.setText(
-                                    String.format(Locale.ENGLISH, "User: %s", task.getResult().getUser().getUid()));
-                            mLoginButton.setText("Log out");
-                        }
-                    }
-                });
-    }
-
-    private void logOutUser() {
-        mAuth.signOut();
-        mUserText.setText("User: N/A");
-        mLoginButton.setText("Log in");
     }
 }

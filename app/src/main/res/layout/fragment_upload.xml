@@ -11,35 +11,19 @@
         tools:context="dk.lndesign.explicitimage.UploadFragment">
 
         <TextView
-            android:id="@+id/user_text"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:paddingTop="16dp"
             android:paddingStart="8dp"
             android:paddingEnd="8dp"
-            android:text="User: N/A" />
-
-        <Button
-            android:id="@+id/log_in_button"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            style="@style/Widget.AppCompat.Button.Borderless.Colored"
-            android:text="Log in" />
-
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:paddingTop="16dp"
-            android:paddingStart="8dp"
-            android:paddingEnd="8dp"
-            android:text="Get image from device:" />
+            android:text="@string/get_device_image" />
 
         <Button
             android:id="@+id/get_image_button"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             style="@style/Widget.AppCompat.Button.Borderless"
-            android:text="Get image" />
+            android:text="@string/get_image_button" />
 
         <ImageView
             android:id="@+id/image_view"
@@ -47,7 +31,8 @@
             android:layout_height="wrap_content"
             android:adjustViewBounds="true"
             android:scaleType="fitCenter"
-            android:background="@color/divider" />
+            android:background="@color/divider"
+            android:contentDescription="@string/chosen_image" />
 
         <TextView
             android:layout_width="match_parent"
@@ -55,14 +40,14 @@
             android:paddingTop="16dp"
             android:paddingStart="8dp"
             android:paddingEnd="8dp"
-            android:text="Annotate  image with Vision API:" />
+            android:text="@string/vision_image_annotate" />
 
         <Button
             android:id="@+id/annotate_image_button"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             style="@style/Widget.AppCompat.Button.Borderless"
-            android:text="Annotate image" />
+            android:text="@string/annotate_image_button" />
 
         <TextView
             android:layout_width="match_parent"
@@ -70,14 +55,14 @@
             android:paddingTop="16dp"
             android:paddingStart="8dp"
             android:paddingEnd="8dp"
-            android:text="Upload image to Firebase:" />
+            android:text="@string/firebase_image_upload" />
 
         <Button
             android:id="@+id/upload_image_button"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             style="@style/Widget.AppCompat.Button.Colored"
-            android:text="Upload image" />
+            android:text="@string/upload_image_button" />
 
         <ProgressBar style="?android:attr/progressBarStyleHorizontal"
             android:id="@+id/progress_bar"
