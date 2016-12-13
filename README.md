@@ -28,14 +28,18 @@ Add new credentials for your application; a simple API key **with no key restric
 Go to your Firebase console and create a new Firebase project.
 Add your `google-services.json` file to the project.
 
+### Enable Google Sign-in method
+Enable Google sign-in method in the Firebase console (Authentication > Sign-in Method > Google).
+Under Web SDK configuration, you can get your web client id, which needs to be assigned to `webClientId` in the properties.
+
 
 ### Add properties
 Create a new `explicitimage.properties` file in the root of the project to hold user information and API key.
 
-The file must atleast contain the following properties:
+The file must at least contain the following properties:
 
 `key`: API key from Google Cloud Platform (API Manager -> Credentials).
 
-`user` and `password`: Username/email and password of user in Firebase Authentication.
+`webClientId`: Web client id for Firebase project. Can be found in Firebase console under authentication or in your Google console under credentials.
 
 `storageUrl`: Firebase Storage url (`gs://<your-firebase-storage-bucket>`)
