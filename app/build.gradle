@@ -9,6 +9,7 @@ def key = keystoreProperties['key']
 def user = keystoreProperties['user']
 def password = keystoreProperties['password']
 def storageUrl = keystoreProperties['storageUrl']
+def webClientId = keystoreProperties['webClientId']
 
 android {
     compileSdkVersion 25
@@ -28,6 +29,7 @@ android {
         buildConfigField 'String', 'USER', "\"${user}\""
         buildConfigField 'String', 'PASSWORD', "\"${password}\""
         buildConfigField 'String', 'STORAGE_URL', "\"${storageUrl}\""
+        buildConfigField 'String', 'WEB_CLIENT_ID', "\"${webClientId}\""
     }
     buildTypes {
         release {
