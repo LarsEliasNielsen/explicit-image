@@ -4,10 +4,13 @@
 package dk.lndesign.explicitimage;
 
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.TabLayout;
+import android.support.v4.graphics.drawable.RoundedBitmapDrawable;
+import android.support.v4.graphics.drawable.RoundedBitmapDrawableFactory;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
@@ -15,6 +18,11 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Toast;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.resource.bitmap.GlideBitmapDrawable;
+import com.bumptech.glide.load.resource.drawable.GlideDrawable;
+import com.bumptech.glide.request.animation.GlideAnimation;
+import com.bumptech.glide.request.target.SimpleTarget;
 import com.google.android.gms.auth.api.Auth;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
@@ -28,6 +36,7 @@ import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.GoogleAuthProvider;
+import com.google.firebase.auth.UserInfo;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -201,9 +210,24 @@ public class MainActivity extends AppCompatActivity {
     private void updateOptionLogInButton() {
         if (mMainMenu != null) {
             if (mAuth.getCurrentUser() != null) {
-                mMainMenu.findItem(R.id.log_in_button).setIcon(R.drawable.ic_check_box_24dp);
+                for (final UserInfo userInfo : mAuth.getCurrentUser().getProviderData()) {
+                    // TODO: Figure out what to do with multiple images. We just pick the last we find.
+                    if (userInfo.getPhotoUrl() != null) {
+                        Glide.with(this).load(userInfo.getPhotoUrl()).into(new SimpleTarget<GlideDrawable>() {
+                            @Override
+                            public void onResourceReady(GlideDrawable resource, GlideAnimation<? super GlideDrawable> glideAnimation) {
+                                // TODO: Remove nasty casting.
+                                Bitmap bitmap = ((GlideBitmapDrawable) resource).getBitmap();
+                                RoundedBitmapDrawable roundProfileImage = RoundedBitmapDrawableFactory.create(getResources(), bitmap);
+                                roundProfileImage.setCircular(true);
+
+                                mMainMenu.findItem(R.id.log_in_button).setIcon(roundProfileImage);
+                            }
+                        });
+                    }
+                }
             } else {
-                mMainMenu.findItem(R.id.log_in_button).setIcon(R.drawable.ic_check_box_blank_24dp);
+                mMainMenu.findItem(R.id.log_in_button).setIcon(R.drawable.ic_account_circle_24dp);
             }
         } else {
             Log.w(LOG_TAG, "Menu not found when trying to update options menu");
