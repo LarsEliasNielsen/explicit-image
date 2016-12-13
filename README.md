@@ -40,7 +40,6 @@ The file must at least contain the following properties:
 
 `key`: API key from Google Cloud Platform (API Manager -> Credentials).
 
-~~`user` and `password`: Username/email and password of user in Firebase Authentication.~~
 `webClientId`: Web client id for Firebase project. Can be found in Firebase console under authentication or in your Google console under credentials.
 
 `storageUrl`: Firebase Storage url (`gs://<your-firebase-storage-bucket>`)
